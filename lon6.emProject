@@ -1,0 +1,337 @@
+<!DOCTYPE CrossStudio_Project_File>
+<solution Name="lon6" target="8" version="2">
+  <configuration
+    Name="Debug"
+    c_preprocessor_definitions="DEBUG"
+    gcc_debugging_level="Level 3"
+    gcc_omit_frame_pointer="Yes"
+    gcc_optimization_level="None" />
+  <configuration
+    Name="Release"
+    c_preprocessor_definitions="NDEBUG"
+    gcc_debugging_level="Level 2"
+    gcc_omit_frame_pointer="Yes"
+    gcc_optimization_level="Level 2 balanced" />
+  <project Name="bootloader">
+    <configuration
+      LIBRARY_IO_TYPE="RTT"
+      Name="Common"
+      arm_architecture="v7EM"
+      arm_compiler_variant="SEGGER"
+      arm_core_type="Cortex-M7"
+      arm_endian="Little"
+      arm_fpu_type="FPv5-SP-D16"
+      arm_linker_heap_size="2048"
+      arm_linker_process_stack_size="0"
+      arm_linker_stack_size="2048"
+      arm_linker_variant="SEGGER"
+      arm_target_device_name="STM32H725ZG"
+      arm_target_interface_type="SWD"
+      debug_stack_pointer_start="__stack_end__"
+      debug_target_connection="J-Link"
+      gcc_entry_point="Reset_Handler"
+      link_dedupe_code="Yes"
+      link_linker_script_file="Setup/SEGGER_Flash.icf"
+      linker_output_format="hex"
+      linker_section_placements_segments="FLASH1 RX 0x08000000 0x00100000;FLASH2 RX 0x90000000 0x04000000;RAM1 RWX 0x24000000 0x00020000;"
+      project_directory="../BOOTLOADER"
+      project_type="Executable" />
+    <configuration
+      Name="Debug"
+      arm_target_interface_type="JTAG"
+      c_preprocessor_definitions="DEBUG;STM32H725xx"
+      c_user_include_directories=".;C:\\PROJEKTY\\ARM_LIBS\\STM32H7xx_DRV\\STM32H7xx_HAL_Driver\\inc.;C:\\PROJEKTY\\ARM_LIBS\\STM32H7xx_DRV\\CMSIS\\Include.;C:\\PROJEKTY\\ARM_LIBS\\STM32H7xx_DRV\\CMSIS\\Device\\ST\\STM32H7xx\\Include."
+      supplyPower="Yes" />
+    <configuration Name="Release" link_dedupe_code="Yes" />
+    <folder Name="Setup">
+      <file file_name="Setup/SEGGER_Flash.icf" />
+    </folder>
+    <folder Name="Source">
+      <file file_name="Source/main.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash_ex.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_gpio.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc_ex.c" />
+    </folder>
+    <folder Name="System">
+      <file file_name="System/Cortex_M_Startup.s" />
+      <file file_name="System/SEGGER_THUMB_Startup.s" />
+      <file file_name="boot.s" />
+    </folder>
+  </project>
+  <project Name="lon6">
+    <configuration
+      LIBRARY_IO_TYPE="RTT"
+      Name="Common"
+      arm_architecture="v7EM"
+      arm_compiler_variant="SEGGER"
+      arm_core_type="Cortex-M7"
+      arm_endian="Little"
+      arm_fpu_type="FPv5-SP-D16"
+      arm_linker_heap_size="2048"
+      arm_linker_process_stack_size="0"
+      arm_linker_stack_size="2048"
+      arm_linker_variant="SEGGER"
+      arm_target_device_name="STM32H725ZG"
+      arm_target_interface_type="SWD"
+      debug_stack_pointer_start="__stack_end__"
+      debug_target_connection="J-Link"
+      gcc_entry_point="Reset_Handler"
+      link_dedupe_code="Yes"
+      link_linker_script_file="Setup/SEGGER_RAM.icf"
+      linker_output_format="hex"
+      linker_section_placements_segments="FLASH1 RX 0x08000000 0x00100000;FLASH2 RX 0x90000000 0x04000000;RAM1 RWX 0x24000000 0x00020000;"
+      project_directory=""
+      project_type="Executable" />
+    <configuration
+      Name="Debug"
+      THREAD_SCRIPT="FreeRTOS CM7"
+      arm_fp_abi="Hard"
+      arm_target_interface_type="JTAG"
+      c_preprocessor_definitions="DEBUG;STM32H725xx;APPLICATION1_SECTOR = FLASH_SECTOR_1;APPLICATION2_SECTOR = FLASH_SECTOR_3"
+      c_user_include_directories=".;C:\\PROJEKTY\\ARM_LIBS\\MyLibs.;C:\\PROJEKTY\\ARM_LIBS\\MyLibsEthernet.;C:\\PROJEKTY\\ARM_LIBS\\MyLibsFAT.;C:\\PROJEKTY\\ARM_LIBS\\MyLibsTCP.;C:\\PROJEKTY\\ARM_LIBS\\MyLibsLON.;C:\\PROJEKTY\\ARM_LIBS\\FreeRTOS-Kernel-10.6.1\\include.;C:\\PROJEKTY\\ARM_LIBS\\FreeRTOS-Kernel-10.6.1\\portable\\GCC\\ARM_CM4F.;C:\\PROJEKTY\\ARM_LIBS\\STM32H7xx_DRV\\STM32H7xx_HAL_Driver\\inc.;C:\\PROJEKTY\\ARM_LIBS\\STM32H7xx_DRV\\CMSIS\\Include.;C:\\PROJEKTY\\ARM_LIBS\\STM32H7xx_DRV\\CMSIS\\Device\\ST\\STM32H7xx\\Include.;C:\\PROJEKTY\\ARM_LIBS\\FreeRTOS_FAT\\include.;C:\\PROJEKTY\\ARM_LIBS\\FreeRTOS_FAT\\portable\\common."
+      debug_register_definition_file="C:/PROJEKTY/ARM_LIBS/registers_stm32h7.xml"
+      debug_threads_script="$(StudioDir)/samples/FreeRTOSPlugin_CM7.js"
+      linker_output_format="bin"
+      linker_printf_fp_enabled="Float"
+      linker_printf_width_precision_supported="Yes"
+      linker_section_placements_segments="FLASH1 RX 0x08000000 0x00100000;  FLASH2 RX 0x90000000 0x04000000; AXI_RAM RWX 0x24000000 0x00030000; DTCM RWX 0x20000000 0x00020000; ITCM RWX 0x00000000 0x00030000; RAM_D2 RW 0x30000000 0x00008000; RAM_D4 RW 0x38000000 0x00004000;"
+      supplyPower="Yes" />
+    <configuration Name="Release" link_dedupe_code="Yes" />
+    <folder Name="CMSIS">
+      <folder Name="inc">
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/CMSIS/Include/core_cm7.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/CMSIS/Device/ST/STM32H7xx/Include/stm32h725xx.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/CMSIS/Device/ST/STM32H7xx/Include/system_stm32h7xx.h" />
+      </folder>
+      <file file_name="system_stm32h7xx.c" />
+    </folder>
+    <folder Name="HAL">
+      <folder Name="inc">
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_adc.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_adc_ex.h" />
+        <file file_name="stm32h7xx_hal_conf.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_cortex.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dma.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dts.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_eth.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash_ex.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_iwdg.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr_ex.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc_ex.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rng.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rtc.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rtc_ex.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_sd.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h" />
+        <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_sdmmc.h" />
+      </folder>
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc_ex.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dts.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_eth.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_exti.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash_ex.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_gpio.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_iwdg.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr_ex.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc_ex.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rng.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc_ex.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sd.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c" />
+      <file file_name="../../../ARM_LIBS/STM32H7xx_DRV/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_sdmmc.c" />
+    </folder>
+    <folder Name="MyFat">
+      <folder Name="inc">
+        <file file_name="../../../ARM_LIBS/MyLibsFAT/CwdUnit.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsFAT/DirUnit.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsFAT/FatCommonDef.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsFAT/FatUnit.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsFAT/FileSystem.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsFAT/FileUnit.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsFAT/lfnUnit.hpp" />
+      </folder>
+      <file file_name="../../../ARM_LIBS/MyLibsFAT/CwdUnit.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsFAT/DirUnit.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsFAT/FatUnit.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsFAT/FileSystem.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsFAT/FileUnit.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsFAT/lfnUnit.cpp" />
+    </folder>
+    <folder Name="MyLib">
+      <folder Name="inc">
+        <file file_name="../../../ARM_LIBS/MyLibs/HeapManager.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibs/RngClass.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibs/RunTimeStats.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibs/TimeClass.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibs/commandHandler.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibs/commonSignal.hpp" />
+      </folder>
+      <file file_name="../../../ARM_LIBS/MyLibs/HeapManager.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibs/RngClass.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibs/RunTimeStats.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibs/TimeClass.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibs/commandHandler.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibs/commonSignal.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibs/sdCard_stm32h7xx.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibs/sdCard_stm32h7xx.hpp" />
+    </folder>
+    <folder Name="MyLon">
+      <folder Name="inc">
+        <file file_name="../../../ARM_LIBS/MyLibsLON/LonChannel.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsLON/LonChannelBasic.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsLON/LonChannelVirtual.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsLON/LonCommands.hpp" />
+        <file file_name="LonConfig.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsLON/LonDataDef.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsLON/LonDatabase.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsLON/LonDevice.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsLON/LonHttpInterface.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsLON/LonInterfacePhy.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsLON/LonInterfaceProcess.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsLON/LonSensors.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsLON/LonSensorsDatabaseProcess.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsLON/LonSignals.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsLON/LonTimers.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsLON/LonTrafficProcess.hpp" />
+      </folder>
+      <file file_name="../../../ARM_LIBS/MyLibsLON/LonChannel.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsLON/LonChannelBasic.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsLON/LonChannelVirtual.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsLON/LonCommands.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsLON/LonDatabase.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsLON/LonDevice.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsLON/LonHttpInterface.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsLON/LonInterfacePhy.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsLON/LonInterfaceProcess.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsLON/LonSensors.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsLON/LonSensorsDatabaseProcess.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsLON/LonTimers.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsLON/LonTrafficProcess.cpp" />
+    </folder>
+    <folder Name="MyTcp">
+      <folder Name="inc">
+        <file file_name="../../../ARM_LIBS/MyLibsEthernet/Ethernet.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetArp.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsEthernet/EthernetBuffers.cpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsEthernet/EthernetBuffers.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetCommon.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetDhcp.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetIcmp.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetIp.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetIpConfig.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetMDNS.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetNtp.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsEthernet/EthernetPhy.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetSocket.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetUdp.hpp" />
+        <file file_name="Ethernet_CONFIG.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsEthernet/Ethernet_RX.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsEthernet/Ethernet_TX.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsEthernet/FTP_ServerProcess.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsEthernet/HTTP_ServerProcess.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsEthernet/TELNET_ServerProcess.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsTCP/TcpDataDef.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsTCP/TcpProcess.hpp" />
+        <file file_name="../../../ARM_LIBS/MyLibsTCP/TcpWindow.hpp" />
+      </folder>
+      <file file_name="../../../ARM_LIBS/MyLibsEthernet/Ethernet.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetArp.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetCommon.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetDhcp.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetIcmp.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetIp.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetIpConfig.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetMDNS.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetMac.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetMac.hpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetNtp.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsEthernet/EthernetPhy.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetSocket.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetTcp.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetTcp.hpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsTCP/EthernetUdp.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsEthernet/Ethernet_RX.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsEthernet/Ethernet_TX.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsEthernet/FTP_ServerProcess.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsEthernet/HTTP_ServerProcess.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsEthernet/TELNET_ServerProcess.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsTCP/TcpProcess.cpp" />
+      <file file_name="../../../ARM_LIBS/MyLibsTCP/TcpWindow.cpp" />
+    </folder>
+    <folder Name="RTOS">
+      <folder Name="inc">
+        <file file_name="../../../ARM_LIBS/FreeRTOS-Kernel-10.6.1/include/FreeRTOS.h" />
+        <file file_name="FreeRTOSConfig.h" />
+        <file file_name="../../../ARM_LIBS/FreeRTOS-Kernel-10.6.1/include/list.h" />
+        <file file_name="../../../ARM_LIBS/FreeRTOS-Kernel-10.6.1/include/portable.h" />
+        <file file_name="../../../ARM_LIBS/FreeRTOS-Kernel-10.6.1/portable/GCC/ARM_CM7/r0p1/portmacro.h" />
+        <file file_name="../../../ARM_LIBS/FreeRTOS-Kernel-10.6.1/include/queue.h" />
+        <file file_name="../../../ARM_LIBS/FreeRTOS-Kernel-10.6.1/include/semphr.h" />
+        <file file_name="../../../ARM_LIBS/FreeRTOS-Kernel-10.6.1/include/task.h" />
+        <file file_name="../../../ARM_LIBS/FreeRTOS-Kernel-10.6.1/include/timers.h" />
+      </folder>
+      <file file_name="../../../ARM_LIBS/FreeRTOS-Kernel-10.6.1/croutine.c" />
+      <file file_name="../../../ARM_LIBS/FreeRTOS-Kernel-10.6.1/event_groups.c" />
+      <file file_name="../../../ARM_LIBS/FreeRTOS-Kernel-10.6.1/list.c" />
+      <file file_name="../../../ARM_LIBS/FreeRTOS-Kernel-10.6.1/portable/GCC/ARM_CM7/r0p1/port.c" />
+      <file file_name="../../../ARM_LIBS/FreeRTOS-Kernel-10.6.1/queue.c" />
+      <file file_name="../../../ARM_LIBS/FreeRTOS-Kernel-10.6.1/stream_buffer.c" />
+      <file file_name="../../../ARM_LIBS/FreeRTOS-Kernel-10.6.1/tasks.c" />
+      <file file_name="../../../ARM_LIBS/FreeRTOS-Kernel-10.6.1/timers.c" />
+    </folder>
+    <folder Name="Setup">
+      <file file_name="Setup/SEGGER_RAM.icf" />
+    </folder>
+    <folder Name="Source">
+      <file file_name="AdcPhy.cpp" />
+      <file file_name="AdcPhy.hpp" />
+      <file file_name="BootUnit.cpp">
+        <configuration
+          Name="Debug"
+          build_always_rebuild="Yes"
+          build_exclude_from_build="No" />
+      </file>
+      <file file_name="BootUnit.hpp" />
+      <file file_name="CommandConfig.hpp" />
+      <file file_name="CommandSystem.cpp" />
+      <file file_name="CommandSystem.hpp" />
+      <file file_name="CommonDef.hpp" />
+      <file file_name="CtrlProcess.cpp" />
+      <file file_name="CtrlProcess.hpp" />
+      <file file_name="PowerProcess.cpp" />
+      <file file_name="PowerProcess.hpp" />
+      <file file_name="SignalList.hpp" />
+      <file file_name="main.cpp" />
+      <file file_name="main.hpp" />
+    </folder>
+    <folder Name="System">
+      <file file_name="System/Cortex_M_Startup.s" />
+      <file file_name="System/SEGGER_THUMB_Startup.s" />
+      <file file_name="boot.s" />
+    </folder>
+  </project>
+</solution>
