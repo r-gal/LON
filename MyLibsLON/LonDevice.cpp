@@ -679,10 +679,12 @@ void LonDevice_c::HandleSwEvent(LonTrafficProcess_c* trafproc_p, uint8_t port,ui
         {
           /* Auto (rain sensor ... ) */
 
+         #if USE_SENSORS == 1
          if(event ==  EVENT_PRESSED)
          {
            LonRainSensor_c::HandleEvent(0);
          }
+         #endif
 
 
         }
@@ -993,7 +995,7 @@ void LonDevice_c::GetDevInfo(LonGetDevInfo_c* recSig_p)
 }
 #endif
 
-#if USE_SENSORS_DATABASE == 1
+
 
 void LonDevice_c::GetValues(uint8_t port, float* val1, float* val2)
 {
@@ -1011,6 +1013,7 @@ void LonDevice_c::GetValues(uint8_t port, float* val1, float* val2)
       val = GetOutputVal(port);
       *val1 = (float)val;
       break;
+      #if USE_SENSORS == 1
       case 2: 
       /*hig*/
       *val1 = ((LonPortDataHigro_c*)GetPortData(port))->GetSensorValue(0);
@@ -1020,6 +1023,7 @@ void LonDevice_c::GetValues(uint8_t port, float* val1, float* val2)
       /*press*/
       *val1 = ((LonPortDataPress_c*)GetPortData(port))->GetSensorValue(0);
       break;
+      #endif
       case 4: 
       /*pwm*/
       val = GetOutputVal(port);
@@ -1031,7 +1035,7 @@ void LonDevice_c::GetValues(uint8_t port, float* val1, float* val2)
       break;
     }
 }
-#endif
+
 
 bool LonDevice_c::IsEnabled(uint8_t port)
 {
@@ -1052,7 +1056,8 @@ bool LonDevice_c::IsEnabled(uint8_t port)
 
 void LonDevice_c::UpdateCheckTime(void)
 {
-
+  #if CONF_USE_TIME == 1
   TimeUnit_c::GetSystemTime(&lastCheckTime);
+  #endif
 
 }

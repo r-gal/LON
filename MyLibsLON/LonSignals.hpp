@@ -221,6 +221,60 @@ class LonGetDevInfo_c: public Sig_c
 
 #endif
 
+#if CONF_USE_TIME == 1
+
+class Lon5MinTick_c: public Sig_c
+{
+  public:
+  Lon5MinTick_c(void) : Sig_c(SIGNO_LON_5_MIN_TICK,HANDLE_LON_TRAFFIC) {}
+  bool fullHourIndicator;
+
+};
+#endif
+
+
+#if USE_SENSORS == 1
+
+struct SensorValues_st
+{
+  uint32_t lAdr;
+  uint8_t port;
+  uint8_t valid;
+  uint16_t spare;
+  float value1;
+  float value2;
+};
+
+class LonGetRainStats_c: public Sig_c
+{
+  public:
+  LonGetRainStats_c(void) : Sig_c(SIGNO_LON_GET_RAIN_STATS,HANDLE_LON_TRAFFIC) {}
+
+  TaskHandle_t task;
+  int idx;
+  bool moreSensors;
+
+  float scale;
+
+  int current;
+  int lastHour[12];
+  int lastHours[48];
+
+};
+
+class LonGetSensorsValues_c : public Sig_c
+{
+    public:
+  LonGetSensorsValues_c(void) : Sig_c(SIGNO_LON_GET_SENSOR_VALUES,HANDLE_LON_TRAFFIC) {}
+
+  uint16_t noOfDevices;
+  TaskHandle_t task;
+
+  SensorValues_st* sensorList;
+};
+
+#endif
+
 #if USE_SENSORS_DATABASE == 1
 
 
@@ -236,26 +290,9 @@ class LonSensorData_c : public Sig_c
 
 };
 
-struct SensorValues_st
-{
-  uint32_t lAdr;
-  uint8_t port;
-  uint8_t valid;
-  uint16_t spare;
-  float value1;
-  float value2;
-};
 
-class LonGetSensorsValues_c : public Sig_c
-{
-    public:
-  LonGetSensorsValues_c(void) : Sig_c(SIGNO_LON_GET_SENSOR_VALUES,HANDLE_LON_TRAFFIC) {}
 
-  uint16_t noOfDevices;
-  TaskHandle_t task;
 
-  SensorValues_st* sensorList;
-};
 
 class LonGetSensorsHistory_c: public Sig_c
 {
@@ -313,30 +350,9 @@ class LonGetPowerInfo_c: public Sig_c
 
 };
 
-class Lon5MinTick_c: public Sig_c
-{
-  public:
-  Lon5MinTick_c(void) : Sig_c(SIGNO_LON_5_MIN_TICK,HANDLE_LON_TRAFFIC) {}
-  bool fullHourIndicator;
 
-};
 
-class LonGetRainStats_c: public Sig_c
-{
-  public:
-  LonGetRainStats_c(void) : Sig_c(SIGNO_LON_GET_RAIN_STATS,HANDLE_LON_TRAFFIC) {}
 
-  TaskHandle_t task;
-  int idx;
-  bool moreSensors;
-
-  float scale;
-
-  int current;
-  int lastHour[12];
-  int lastHours[48];
-
-};
 
 
 

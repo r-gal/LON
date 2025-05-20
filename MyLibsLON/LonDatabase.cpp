@@ -67,6 +67,19 @@ bool LonDatabase_c::CheckIfWritable(LonConfigPage_st* src, LonConfigPage_st* des
 
 }
 
+#ifdef STM32F446xx
+
+#define FLASHWORD_SIZE 1
+#define FLASF_WTITETYPE FLASH_TYPEPROGRAM_WORD
+#endif
+
+#ifdef STM32H725xx
+
+#define FLASHWORD_SIZE FLASH_NB_32BITWORD_IN_FLASHWORD
+#define FLASF_WTITETYPE FLASH_TYPEPROGRAM_FLASHWORD
+
+#endif
+
 bool LonDatabase_c::WriteFile(uint32_t idx, LonConfigPage_st* config, uint8_t masc)
 {
   /*FLASH_ClearFlag(FLASH_FLAG_PGSERR);
@@ -86,11 +99,11 @@ bool LonDatabase_c::WriteFile(uint32_t idx, LonConfigPage_st* config, uint8_t ma
 
   HAL_StatusTypeDef status;
 
-  int flashWordsToProgram = ( FILESIZE/4 ) / FLASH_NB_32BITWORD_IN_FLASHWORD;
+  int flashWordsToProgram = ( FILESIZE/4 ) / FLASHWORD_SIZE;
 
   for(int w = 0; w < flashWordsToProgram; w++)
   {
-    uint32_t addrOffset = w * 4 * FLASH_NB_32BITWORD_IN_FLASHWORD;
+    uint32_t addrOffset = w * 4 * FLASHWORD_SIZE;
     uint32_t fileStart = (uint32_t)(&config->rawData[0]);
     uint32_t flashStartA = (uint32_t)(&(ConfigA[idx].rawData[0]));
     uint32_t flashStartB = (uint32_t)(&(ConfigB[idx].rawData[0]));
@@ -98,12 +111,22 @@ bool LonDatabase_c::WriteFile(uint32_t idx, LonConfigPage_st* config, uint8_t ma
 
     if(masc & 0x01)
     {
-      status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD,flashStartA + addrOffset,fileStart + addrOffset);
+      #ifdef STM32F4
+      status = HAL_FLASH_Program(FLASF_WTITETYPE,flashStartA + addrOffset,config->rawData[w]);
+      #endif
+      #ifdef STM32H7
+      status = HAL_FLASH_Program(FLASF_WTITETYPE,flashStartA + addrOffset,fileStart + addrOffset);
+      #endif
       if(status != HAL_OK) { break; }
     }
     if(masc & 0x02) 
     {
-      status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD,flashStartB + addrOffset,fileStart + addrOffset);
+      #ifdef STM32F4
+      status = HAL_FLASH_Program(FLASF_WTITETYPE,flashStartB + addrOffset,config->rawData[w]);
+      #endif
+      #ifdef STM32H7
+      status = HAL_FLASH_Program(FLASF_WTITETYPE,flashStartB + addrOffset,fileStart + addrOffset);
+      #endif
       if(status != HAL_OK) { break; }
     }
   }
@@ -123,17 +146,29 @@ bool LonDatabase_c::SelectAsObsolete(uint32_t idx)
   FLASH_Lock();*/
   bool result = false;
 
-  int refArray[FLASH_NB_32BITWORD_IN_FLASHWORD];
+  #ifdef STM32H7
+  int refArray[FLASHWORD_SIZE];
   memset(refArray,0,sizeof(refArray));
+  #endif
 
   HAL_FLASH_Unlock();
 
   HAL_StatusTypeDef status;
-  status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD,(uint32_t)(&(ConfigA[idx].rawData[0])),(uint32_t)refArray);
+  #ifdef STM32F4
+  status = HAL_FLASH_Program(FLASF_WTITETYPE,(uint32_t)(&(ConfigA[idx].rawData[0])),0);
+  #endif
+  #ifdef STM32H7
+  status = HAL_FLASH_Program(FLASF_WTITETYPE,(uint32_t)(&(ConfigA[idx].rawData[0])),(uint32_t)refArray);
+  #endif
 
   if(status == HAL_OK)
   {
-    status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD,(uint32_t)(&(ConfigB[idx].rawData[0])),(uint32_t)refArray);
+    #ifdef STM32F4
+    status = HAL_FLASH_Program(FLASF_WTITETYPE,(uint32_t)(&(ConfigB[idx].rawData[0])),0);
+    #endif
+    #ifdef STM32H7
+    status = HAL_FLASH_Program(FLASF_WTITETYPE,(uint32_t)(&(ConfigB[idx].rawData[0])),(uint32_t)refArray);
+    #endif
     if(status == HAL_OK)
     {
       result = true;
@@ -323,9 +358,11 @@ bool LonDatabase_c::FormatTimers(void)
   pEraseInit.VoltageRange = FLASH_VOLTAGE_RANGE_3;
 
 
-  int flashWordsToErrase = (sizeof(LonTimerPage_st)/4 ) / FLASH_NB_32BITWORD_IN_FLASHWORD;
-  int refArray[FLASH_NB_32BITWORD_IN_FLASHWORD];
+  int flashWordsToErrase = (sizeof(LonTimerPage_st)/4 ) / FLASHWORD_SIZE;
+  #ifdef STM32H7
+  int refArray[FLASHWORD_SIZE];
   memset(refArray,0,sizeof(refArray));
+  #endif
 
   uint32_t sectorError;
   HAL_FLASHEx_Erase(&pEraseInit, &sectorError);
@@ -336,12 +373,22 @@ bool LonDatabase_c::FormatTimers(void)
     result = true;
     for(int i =0; i< flashWordsToErrase; i++)
     {
-      uint32_t flashAddr = (uint32_t)(&(ConfigTimer->raw[0] )) + i*FLASH_NB_32BITWORD_IN_FLASHWORD*4;
-      if( HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD,flashAddr,(uint32_t)refArray) != HAL_OK)
+      
+      #ifdef STM32F4
+      if( HAL_FLASH_Program(FLASF_WTITETYPE,(uint32_t)(&(ConfigTimer->raw[i])),0) != HAL_OK)
       {
         result = false;
         break;
       }
+      #endif
+      #ifdef STM32H7
+      uint32_t flashAddr = (uint32_t)(&(ConfigTimer->raw[0] )) + i*FLASHWORD_SIZE*4;
+      if( HAL_FLASH_Program(FLASF_WTITETYPE,flashAddr,(uint32_t)refArray) != HAL_OK)
+      {
+        result = false;
+        break;
+      }
+      #endif
     }    
   }
 
@@ -394,19 +441,28 @@ bool LonDatabase_c::SaveTimerConfig(uint8_t idx, LonTimerConfig_st* config)
   {
     result = true;
 
-    int flashWordsToProgram = (sizeof(LonTimerPage_st)/4 ) / FLASH_NB_32BITWORD_IN_FLASHWORD;
+    int flashWordsToProgram = (sizeof(LonTimerPage_st)/4 ) / FLASHWORD_SIZE;
 
     for(int i =0; i< flashWordsToProgram; i++)
     {
-      uint32_t addrOffset = i*FLASH_NB_32BITWORD_IN_FLASHWORD*4;
 
-      uint32_t flashAddr = (uint32_t)(&(ConfigTimer->raw[0] )) + addrOffset;
-      uint32_t fileAddr = (uint32_t)(&(timerPageNew->timer[0] )) + addrOffset;
-      if( HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD,flashAddr,fileAddr) != HAL_OK)
+      #ifdef STM32F4
+      if( HAL_FLASH_Program(FLASF_WTITETYPE,(uint32_t)(&(ConfigTimer->raw[i] )),timerPageNew->raw[i] ) != HAL_OK)
       {
         result = false;
         break;
       }
+      #endif
+      #ifdef STM32H7
+      uint32_t addrOffset = i*FLASHWORD_SIZE*4;
+      uint32_t flashAddr = (uint32_t)(&(ConfigTimer->raw[0] )) + addrOffset;
+      uint32_t fileAddr = (uint32_t)(&(timerPageNew->timer[0] )) + addrOffset;
+      if( HAL_FLASH_Program(FLASF_WTITETYPE,flashAddr,fileAddr) != HAL_OK)
+      {
+        result = false;
+        break;
+      }
+      #endif
     }
 
   }

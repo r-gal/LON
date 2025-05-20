@@ -103,7 +103,14 @@ void LonDeviceInterface_c::setDat(bool data)
 
 bool LonDeviceInterface_c::checkClk(void) 
 {
-  return(clk == getClk());
+  if(clk == getClk())
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 } 
 
 bool LonDeviceInterface_c::checkDat(void)

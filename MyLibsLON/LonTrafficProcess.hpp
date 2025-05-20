@@ -22,12 +22,14 @@ class LonChannelVirtual_c;
 #include "LonCommands.hpp"
 #endif
 
+#if CONF_USE_TIME == 1
 class LonTimeEvent_c : public TimeEvent_c
 {
   public:
 
   void Action(SystemTime_st* time);
 };
+#endif
 
 
 class LonTrafficProcess_c : public process_c
@@ -64,7 +66,9 @@ class LonTrafficProcess_c : public process_c
   //void HandleGetStat(GetStat_c* recSig_p);
   #endif
 
+  #if CONF_USE_TIME == 1
   LonTimeEvent_c timeEvent;
+  #endif
   
 
   void ScanTmo(void);
@@ -74,7 +78,9 @@ class LonTrafficProcess_c : public process_c
   void CheckDevFromConfig(void);
   void CheckDevFromConfigAck(LonIOdata_c* recSig_p);
 
+  #if USE_SENSORS_DATABASE == 1
   void GetOutputsList(LonGetOutputsList_c* recSig_p);
+  #endif
   #if USE_SENSORS == 1
   void GetSensorsValues(LonGetSensorsValues_c* recSig_p);
   #endif

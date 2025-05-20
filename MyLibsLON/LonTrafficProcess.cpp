@@ -44,8 +44,11 @@
 LonDevCheckTick_c devCheckTick_sig; /* static signal */
 LonTmoScanTick_c TmoScanTick_sig;
 LonTime_c lonTimeSig;
-Lon5MinTick_c lon5MinTick;
 
+#if CONF_USE_TIME == 1
+Lon5MinTick_c lon5MinTick;
+#endif
+extern IWDG_HandleTypeDef hiwdg1;
 
 const char* eventString[] = {"NOEVENT","CHN_DOWN","CHG_UP","PRESS","RELEASE","CLICK","HOLD"};
 
@@ -60,6 +63,7 @@ void vTimerCallback3( TimerHandle_t xTimer )
   TmoScanTick_sig.Send();
 }
 
+#if CONF_USE_TIME == 1
 void LonTimeEvent_c::Action(SystemTime_st* time)
 {
   if(time->Second % 10 == 0)
@@ -74,6 +78,7 @@ void LonTimeEvent_c::Action(SystemTime_st* time)
     lon5MinTick.SendISR();
   }
 }
+#endif
 
 LonTrafficProcess_c::LonTrafficProcess_c(uint16_t stackSize, uint8_t priority, uint8_t queueSize, HANDLERS_et procId) : process_c(stackSize,priority,queueSize,procId,"TRAFFIC")
 {
@@ -143,6 +148,12 @@ void LonTrafficProcess_c::main(void)
       case SIGNO_LON_TMOSCAN_TICK:
         ScanTmo();
         StepChannelTimeouts();
+
+        #if LON_USE_PWR_MGMT == 0
+        #if USE_WATCHDOG == 1
+        __HAL_IWDG_RELOAD_COUNTER(&hiwdg1);
+        #endif
+        #endif
         releaseSig = false;
         break;
       case SIGNO_LON_TIME:
@@ -174,22 +185,29 @@ void LonTrafficProcess_c::main(void)
         GetDevInfo((LonGetDevInfo_c*) recSig_p);
         releaseSig = false;
         break;
+        #if CONF_USE_TIME == 1
+        case SIGNO_LON_5_MIN_TICK:
+        {
+        #if USE_SENSORS == 1
+        bool fullHourIndicator = ((Lon5MinTick_c*) recSig_p)->fullHourIndicator;
+        LonRainSensor_c::SendAcumulatedData(fullHourIndicator);
+        #endif
+        releaseSig = false;
+        }
+        break;
+        #endif
+        #if USE_SENSORS_DATABASE == 1
       case SIGNO_LON_GET_OUTPUTS_LIST:
         GetOutputsList((LonGetOutputsList_c*) recSig_p);
         releaseSig = false;
         break;
+        #endif
         #if USE_SENSORS == 1
       case SIGNO_LON_GET_SENSOR_VALUES:
         GetSensorsValues((LonGetSensorsValues_c*) recSig_p);
         releaseSig = false;
         break;
-      case SIGNO_LON_5_MIN_TICK:
-        {
-        bool fullHourIndicator = ((Lon5MinTick_c*) recSig_p)->fullHourIndicator;
-        LonRainSensor_c::SendAcumulatedData(fullHourIndicator);
-        releaseSig = false;
-        }
-        break;
+
       case SIGNO_LON_GET_RAIN_STATS:
         {
         LonRainSensor_c::GetRainStats((LonGetRainStats_c*) recSig_p);
@@ -681,6 +699,7 @@ void GetNoOfOutputTypeDevices(LonDevice_c* device,void* noOfDevices)
   }
 }
 
+#if USE_SENSORS_DATABASE == 1
 void GetOutputsValues(LonDevice_c* device,void* vsig_p)
 {
   devType_et devType = device->GetDevType();
@@ -716,8 +735,6 @@ void GetOutputsValues(LonDevice_c* device,void* vsig_p)
   }
 }
 
-
-
 void LonTrafficProcess_c::GetOutputsList(LonGetOutputsList_c* recSig_p)
 {
 
@@ -728,6 +745,7 @@ void LonTrafficProcess_c::GetOutputsList(LonGetOutputsList_c* recSig_p)
 
   xTaskNotifyGive(recSig_p->task);
 }
+#endif
 /*
 void LonTrafficProcess_c::HandleGetStat(GetStat_c* recSig_p)
 {

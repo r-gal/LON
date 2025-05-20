@@ -14,7 +14,9 @@
 #include "LonTimers.hpp"
 #include "LonDatabase.hpp"
 
+#if LON_USE_RNG == 1
 #include "RngClass.hpp"
+#endif
 
 LonTrafficProcess_c* LonTimer_c::trafProc_p = NULL;
 LonTimer_c LonTimer_c::timer[TIMERSINPAGE];
@@ -46,8 +48,12 @@ void LonTimer_c::InitTimers(LonTrafficProcess_c* trafProc_p_)
 
 uint32_t LonTimer_c::GetRandom(void)
 {
-
+  #if LON_USE_RNG == 1
   return RngUnit_c::GetRandomVal();
+  #else
+  uint32_t* systickptr = (uint32_t*)0xe000e018;
+  return *systickptr;
+  #endif
 
 }
 
@@ -77,7 +83,6 @@ uint8_t LonTimer_c::GetNewValueFromRandom(uint8_t actValue, uint8_t maxVal, bool
     maxStep = 1;
   }
 
- /* while(RNG_GetFlagStatus(RNG_FLAG_DRDY) != SET);*/
   randVal = GetRandom();
   step = randVal % (maxStep+1);
 

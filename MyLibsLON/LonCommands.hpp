@@ -76,6 +76,7 @@ class Com_setpwm : public Command_c
   comResp_et Handle(CommandData_st* comData_);
 };
 
+#if USE_TIMERS == 1
 class Com_printtimers : public Command_c
 {
   public:
@@ -99,7 +100,7 @@ class Com_formattimers : public Command_c
   void PrintHelp(CommandHandler_c* commandHandler ){}
   comResp_et Handle(CommandData_st* comData_);
 };
-
+#endif
 class Com_readconfig : public Command_c
 {
   public:
@@ -138,14 +139,18 @@ class CommandLon_c :public CommandGroup_c
 
   Com_printdevice printdevice;
   Com_setpwm setpwm;
+  #if USE_TIMERS == 1
   Com_printtimers printtimers;
   Com_settimer settimer;
   Com_formattimers formattimers;
-
+  #endif
+  #if LON_USE_SDCARD ==1
   Com_readconfig readconfig;
   Com_writeconfig writeconfig;
-
+  #endif
+  #if USE_SENSORS == 1
   Com_rainsensor rainsensor;
+  #endif
 
 
   public:

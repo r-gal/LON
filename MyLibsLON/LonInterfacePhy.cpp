@@ -23,10 +23,11 @@ LonInterfaceTick_c lonInterfaceTick_sig; /* static signal */
 
 LonInterfacePhy_c::LonInterfacePhy_c(uint8_t portNo_) : portNo(portNo_)
 {
+    __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
     __HAL_RCC_GPIOC_CLK_ENABLE();
     __HAL_RCC_GPIOD_CLK_ENABLE();
-    __HAL_RCC_GPIOE_CLK_ENABLE();
+    __HAL_RCC_GPIOH_CLK_ENABLE();
 
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;

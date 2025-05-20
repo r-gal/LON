@@ -14,7 +14,9 @@
 #include "LonDatabase.hpp"
 #include "LonDevice.hpp"
 
+#if LON_USE_SDCARD ==1
 #include "FileSystem.hpp"
+#endif
 
 CommandLon_c commandLon;
 
@@ -608,6 +610,7 @@ comResp_et Com_setpwm::Handle(CommandData_st* comData)
   }  
 }
 
+#if USE_TIMERS == 1
 comResp_et Com_printtimers::Handle(CommandData_st* comData)
 {
 
@@ -785,6 +788,7 @@ comResp_et Com_formattimers::Handle(CommandData_st* comData)
     return COMRESP_OK;
   }  
 }
+#endif
 
 comResp_et Com_formatconfig::Handle(CommandData_st* comData)
 {
@@ -840,6 +844,7 @@ comResp_et Com_printdatabase::Handle(CommandData_st* comData)
   return COMRESP_OK;
 }
 
+#if LON_USE_SDCARD == 1
 comResp_et Com_readconfig::Handle(CommandData_st* comData)
 {
   LonDatabase_c database;
@@ -922,8 +927,8 @@ comResp_et Com_writeconfig::Handle(CommandData_st* comData)
   return COMRESP_OK;
 
 }
-
-
+#endif
+#if USE_SENSORS == 1
 comResp_et Com_rainsensor::Handle(CommandData_st* comData)
 {
 
@@ -980,33 +985,8 @@ comResp_et Com_rainsensor::Handle(CommandData_st* comData)
     sprintf(textBuf,"%d : %.2f\n", idx, sig_p->scale * sig_p->lastHours[idx] );
     Print(comData->commandHandler,textBuf);
   }
-/*
-   sprintf(textBuf,"Act: %d LastHour: %d, last 24H: %d last 48H: %d \n",
-    sig_p->current,
-    lastHour,
-    last24Hours,
-    last48Hours
-   
-    );
-  Print(comData->commandHandler,textBuf);
 
-  sprintf(textBuf,"Last Hour: \n" );
-  Print(comData->commandHandler,textBuf);
 
-  for(int idx=0; idx<12;idx++)
-  {
-    sprintf(textBuf,"%x min: %d = %c%c%c%c\n ", 5*idx,  sig_p->lastHour[idx], (sig_p->lastHour[idx]>>24)&0xFF,(sig_p->lastHour[idx]>>16)&0xFF,(sig_p->lastHour[idx]>>8)&0xFF,(sig_p->lastHour[idx]>>0)&0xFF );
-    Print(comData->commandHandler,textBuf);
-  }
-  sprintf(textBuf,"Last 48 Hours: \n" );
-  Print(comData->commandHandler,textBuf);
-
-  for(int idx=0; idx<48;idx++)
-  {
-    sprintf(textBuf,"%d : %d\n", idx,  sig_p->lastHours[idx] );
-    Print(comData->commandHandler,textBuf);
-  }
-*/
   delete[] textBuf;
 
   delete sig_p;
@@ -1015,3 +995,4 @@ comResp_et Com_rainsensor::Handle(CommandData_st* comData)
 
 }
 
+  #endif
