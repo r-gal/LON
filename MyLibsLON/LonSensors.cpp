@@ -105,7 +105,7 @@ void LonSensors_c::handleDataHig(LonDevice_c* dev_p, uint8_t portNo, uint8_t* se
 
     CheckSensorAlarm(dev_p,portNo);
 
-    #if USE_SENSORS_DATABASE == 1
+    #if LON_USE_SENSORS_DATABASE == 1
     LonSensorData_c* sig_p = new LonSensorData_c;
     sig_p->lAdr = dev_p->GetLAdr();
     sig_p->port = portNo;
@@ -125,7 +125,7 @@ void LonSensors_c::handleDataPress(LonDevice_c* dev_p, uint8_t portNo, uint8_t* 
     
     ((LonPortDataPress_c*)dev_p->GetPortData(portNo))->SetMeasurement(sensorData);
 
-    #if USE_SENSORS_DATABASE == 1
+    #if LON_USE_SENSORS_DATABASE == 1
     LonSensorData_c* sig_p = new LonSensorData_c;
     sig_p->lAdr = dev_p->GetLAdr();
     sig_p->port = portNo;
@@ -247,7 +247,7 @@ void LonRainSensor_c::SendAcumulatedData(bool fullHourIndicator)
   {
     LonRainSensor_c* sensor_p = &rainSensor[idx];
 
-    #if USE_SENSORS_DATABASE == 1
+    #if LON_USE_SENSORS_DATABASE == 1
     LonSensorData_c* sig_p = new LonSensorData_c;
     sig_p->lAdr = 0;
     sig_p->port = 0;

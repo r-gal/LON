@@ -275,7 +275,7 @@ class LonGetSensorsValues_c : public Sig_c
 
 #endif
 
-#if USE_SENSORS_DATABASE == 1
+#if LON_USE_SENSORS_DATABASE == 1
 
 
 class LonSensorData_c : public Sig_c

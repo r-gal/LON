@@ -114,12 +114,12 @@ void PwrProcess_c::main(void)
       releaseSig = false;
       AdcReady();      
       break;
-
+#if LON_USE_SENSORS_DATABASE == 1
       case SIGNO_LON_GET_POWER_INFO:
       releaseSig = false;
       FillPowerInfo((LonGetPowerInfo_c*) recSig_p);      
       break;
-
+#endif
       case SIGNO_CMD_POWERINFO:
       releaseSig = false;
       FillCmdPowerInfo((pwrGetInfo_c*) recSig_p);      
@@ -334,7 +334,7 @@ void PwrProcess_c::AdcReady(void)
   }
   lastIdx = idx;
 
-  #if USE_SENSORS_DATABASE == 1
+  #if LON_USE_SENSORS_DATABASE == 1
   LonSensorData_c* sig_p = new LonSensorData_c;
   sig_p->lAdr = 0;
   sig_p->port = 0;
@@ -405,7 +405,7 @@ void PwrProcess_c::AdcReady(void)
 */
 }
 
-
+#if LON_USE_SENSORS_DATABASE == 1
 void PwrProcess_c::FillPowerInfo(LonGetPowerInfo_c* sig_p)
 {
 
@@ -423,6 +423,7 @@ void PwrProcess_c::FillPowerInfo(LonGetPowerInfo_c* sig_p)
   xTaskNotifyGive(sig_p->task);
 
 }
+#endif
 
 void PwrProcess_c::FillCmdPowerInfo(pwrGetInfo_c* sig_p)
 {

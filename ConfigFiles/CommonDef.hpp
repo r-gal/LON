@@ -5,10 +5,6 @@
 #include "stm32h7xx_hal.h"
 
 #include "GeneralConfig.h"
-/*
-#include "stm32f4xx.h"
-#include "stm32f4xx_hal.h"*/
-
 
 #define SPI4_INT_Pin GPIO_PIN_3
 #define SPI4_INT_GPIO_Port GPIOE

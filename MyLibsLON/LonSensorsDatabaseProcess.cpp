@@ -396,7 +396,7 @@ void LonSensorsDatabaseProcess_c::GetFileBufferSize(int type, uint16_t* bufferSi
     default:
       fileBufferSize = 3*512; 
       fileSize = 12*24;
-      use2ndBuffer = true;
+      use2ndBuffer = false;
       break;
   }
   if(bufferSize_p != nullptr) { *bufferSize_p = fileBufferSize; }
@@ -432,14 +432,14 @@ void LonSensorsDatabaseProcess_c::GetFileName(int type, int day, uint32_t lAdr, 
 bool LonSensorsDatabaseProcess_c::GetSensorsDayStatistics(int day, int type, uint32_t lAdr, int port, int subport, STATS_DATA_st* buffer, STATS_MODE_et mode,bool detailed)
 {
   uint16_t fileBufferSize;
-  bool use2ndBuffer;
+  //bool use2ndBuffer;
   char* fileName = new char[128];
   File_c* currentFile = nullptr;
   uint8_t* fileBuffer;
 
   bool result = false;
 
-  GetFileBufferSize(type, &fileBufferSize, nullptr, &use2ndBuffer);
+  GetFileBufferSize(type, &fileBufferSize, nullptr, nullptr);
 
   GetFileName(type,day,lAdr,port,fileName);
 

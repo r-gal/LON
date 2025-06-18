@@ -28,12 +28,12 @@
 #define SOCKET_QUEUE_LEN 16
 #define SET_SOCKET_BUFFERIN_CCM 1
 
-#define USE_CONFIGURABLE_IP 1
-#define USE_DHCP 1
+#define USE_CONFIGURABLE_IP 0
+#define USE_DHCP 0
 
-#define USE_HTTP 1
-#define USE_TELNET 1
-#define USE_FTP 1
+#define USE_HTTP 0
+#define USE_TELNET 0
+#define USE_FTP 0
 
 #define DEFAULT_IP 0xC0A83733 /*192.168.55.51*/
 #define DEFAULT_DHCP_SERVER  0xC0A83701 /*192.168.55.1*/
@@ -51,7 +51,7 @@
 #define MDNS_IP  0xE00000FB /*224.0.0.251*/
 #define MDNS_PORT 5353
 
-#define USE_NTP 1
+#define USE_NTP 0
 
 #define ARP_ARRAY_SIZE 16
 

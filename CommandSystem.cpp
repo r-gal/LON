@@ -10,19 +10,10 @@
 
 #include "CommandSystem.hpp"
 
+#if CONF_USE_TIME == 1
 #include "TimeClass.hpp"
+#endif
 
-/*#include "stm32f4xx_rcc.h"
-#include "stm32f4xx_tim.h"
-#include "stm32f4xx_gpio.h"
-#include "stm32f4xx_rtc.h"
-#include "stm32f4xx_pwr.h"*/
-//#include "misc.h"
-
-//#include "common.hpp"
-//#include "database.hpp"
-//#include "device_class.hpp"
-//#include "FaultHandler.hpp"
 #include "HeapManager.hpp"
 
 extern HeapManager_c baseManager;
@@ -33,7 +24,11 @@ extern float batteryVoltage ;
 extern float cpuTemperature ;
 extern float acuVoltage;
 extern float mainVoltage;
+#if LON_BOOTUNIT == 1
 extern char* versionName;
+#else
+const char* versionName = VERSION_NAME;
+#endif
 
 CommandSystem_c::CommandSystem_c(void)
 {
@@ -42,6 +37,7 @@ CommandSystem_c::CommandSystem_c(void)
 
 }
 
+#if CONF_USE_TIME == 1
 comResp_et Com_gettime::Handle(CommandData_st* comData)
 {
   SystemTime_st pxTime;
@@ -115,6 +111,7 @@ comResp_et Com_settime::Handle(CommandData_st* comData)
   return COMRESP_OK;
 
 }
+#endif
 
 comResp_et Com_meminfo::Handle(CommandData_st* comData)
 {
@@ -123,18 +120,22 @@ comResp_et Com_meminfo::Handle(CommandData_st* comData)
 
   if(actionIdx>=0)
   {
-    if (strcmp(comData->buffer+comData->argValPos[actionIdx],"DTCM") == 0)
-    { 
-      manager = & ccmManager;
-    }
-    else if(strcmp(comData->buffer+comData->argValPos[actionIdx],"SRAM") == 0)
+    if(strcmp(comData->buffer+comData->argValPos[actionIdx],"SRAM") == 0)
     {
       manager = & baseManager;
     }
+    #if MEM_USE_DTCM == 1
+    else if (strcmp(comData->buffer+comData->argValPos[actionIdx],"DTCM") == 0)
+    { 
+      manager = & ccmManager;
+    }
+    #endif
+    #if MEM_USE_RAM2 == 1
     else if(strcmp(comData->buffer+comData->argValPos[actionIdx],"RAMD2") == 0)
     {
       manager = & ramD2Manager;
     }
+    #endif
     else
     {
       return COMRESP_VALUE;
@@ -210,18 +211,22 @@ comResp_et Com_memdetinfo::Handle(CommandData_st* comData)
 
   if(actionIdx>=0)
   {
-    if (strcmp(comData->buffer+comData->argValPos[actionIdx],"DTCM") == 0)
-    { 
-      manager = & ccmManager;
-    }
-    else if (strcmp(comData->buffer+comData->argValPos[actionIdx],"RAMD2") == 0)
-    { 
-      manager = & ramD2Manager;
-    }
-    else if(strcmp(comData->buffer+comData->argValPos[actionIdx],"SRAM") == 0)
+    if(strcmp(comData->buffer+comData->argValPos[actionIdx],"SRAM") == 0)
     {
       manager = & baseManager;
     }
+    #if MEM_USE_DTCM == 1
+    else if (strcmp(comData->buffer+comData->argValPos[actionIdx],"DTCM") == 0)
+    { 
+      manager = & ccmManager;
+    }
+    #endif
+    #if MEM_USE_RAM2 == 1
+    else if(strcmp(comData->buffer+comData->argValPos[actionIdx],"RAMD2") == 0)
+    {
+      manager = & ramD2Manager;
+    }
+    #endif
     else
     {
       return COMRESP_VALUE;
@@ -315,19 +320,25 @@ comResp_et Com_gettasks::Handle(CommandData_st* comData)
 comResp_et Com_sysinfo::Handle(CommandData_st* comData)
 {
   char* strBuf = new char[128];
+  #if CONF_USE_TIME == 1
   SystemTime_st* restartTime;
   restartTime = TimeUnit_c::GetRestartTime();
+  #else
+  strcpy(strBuf,"UNN");
+  #endif
 
   sprintf(strBuf,"SYSTEM INFO:\n\n Last restart:\n");
   Print(comData->commandHandler,strBuf);
 
+  #if CONF_USE_TIME == 1
   TimeUnit_c::PrintTime(strBuf,restartTime);  
   Print(comData->commandHandler,strBuf);
+  #endif
 
   sprintf(strBuf,"Version: %s\n",versionName);
   Print(comData->commandHandler,strBuf);
   
-
+  #if LON_USE_PWR_MGMT == 1
   sprintf(strBuf,"V BAT           = %.2fV\n",batteryVoltage);
   Print(comData->commandHandler,strBuf);
 
@@ -339,7 +350,7 @@ comResp_et Com_sysinfo::Handle(CommandData_st* comData)
 
   sprintf(strBuf,"CPU temperature = %.2fC\n",cpuTemperature);
   Print(comData->commandHandler,strBuf);
-
+  #endif
   Print(comData->commandHandler,"\nEND.\n");
 
 

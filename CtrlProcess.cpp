@@ -9,21 +9,14 @@
 
 
 #include "CtrlProcess.hpp"
-//#include "ff_stdio.h" 
+#if CONF_USE_RUNTIME == 1
 #include "RunTimeStats.hpp"
+#endif
 
+#if LON_USE_SDCARD == 1
 #include "FileSystem.hpp"
+#endif
 
-
-
-/*
-#include "stm32f4xx_rcc.h"
-#include "stm32f4xx_gpio.h"
-#include "stm32f4xx_rtc.h"
-#include "stm32f4xx_dma.h"
-#include "misc.h"
-
-*/
 
 
 void vFunction100msTimerCallback( TimerHandle_t xTimer )
@@ -35,46 +28,37 @@ void vFunction100msTimerCallback( TimerHandle_t xTimer )
 CtrlProcess_c::CtrlProcess_c(uint16_t stackSize, uint8_t priority, uint8_t queueSize, HANDLERS_et procId) : process_c(stackSize,priority,queueSize,procId,"CONFIG")
 {
 
- // TimerHandle_t timer = xTimerCreate("",pdMS_TO_TICKS(500),pdTRUE,( void * ) 0,vFunction100msTimerCallback);
- // xTimerStart(timer,0);
-
   
 
 }
 
 void CtrlProcess_c::main(void)
 {
+  #if CONF_USE_RUNTIME == 1
   RunTime_c::Start();
+  #endif
+  #if CONF_USE_TIME == 1
   timeUnit.Init();
+  #endif
+  #if LON_BOOTUNIT == 1
   bootUnit.Init(TimeUnit_c::GetHrtc());
+  #endif
+  #if LON_USE_RNG == 1
   rng.Init();
-  ethernet.Init();
+  #endif
 
+  #if LON_USE_ETHERNET == 1
+  ethernet.Init();
+  #endif
+
+  #if LON_USE_SDCARD == 1
   sdCard.Init();
+  #endif
+
   #if DEBUG_PROCESS > 0
   printf("Ctrl proc started \n");
   #endif
 
-
-
-  /* SD card test */
-
-  FindData_c* findData = new FindData_c;
-
-  bool res;
-
-  if(findData->FindFirst((char*)"") == true)
-  { 
-    do
-    {
-      printf(findData->entryData.name);
-      printf("\n");
-
-      res = findData->FindNext();
-    } while(res == true );
-  }
-
-  delete findData;
 
 
   while(1)
@@ -87,21 +71,20 @@ void CtrlProcess_c::main(void)
 
     switch(sigNo)
     {
+    #if LON_USE_SDCARD == 1
       case SIGNO_SDIO_CardDetectEvent:
         sdCard.CardDetectEvent();
         releaseSig = false;
         break;
+        #endif
       default:
       break;
 
     }
     if(releaseSig)
-     {
+    {
       delete  recSig_p;
-       }
- 
+    } 
   }
-
-
 }
 

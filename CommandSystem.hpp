@@ -5,7 +5,7 @@
 
 
 
-
+#if CONF_USE_TIME == 1
 class Com_gettime : public Command_c
 {
   public:
@@ -22,6 +22,7 @@ class Com_settime : public Command_c
   void PrintHelp(CommandHandler_c* commandHandler ){}
   comResp_et Handle(CommandData_st* comData_);
 };
+#endif
 
 class Com_meminfo : public Command_c
 {
@@ -65,9 +66,10 @@ class Com_siginfo : public Command_c
 
 class CommandSystem_c :public CommandGroup_c
 {
-
+  #if CONF_USE_TIME == 1
   Com_gettime gettime;
   Com_settime settime;
+  #endif
   Com_meminfo meminfo;
   Com_memdetinfo memdetinfo;
   Com_gettasks gettasks;

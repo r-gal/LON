@@ -45,7 +45,9 @@ class PwrProcess_c : public process_c
 
   void CheckPowerState(float acuV, float mainV);
 
+  #if LON_USE_SENSORS_DATABASE == 1
   void FillPowerInfo(LonGetPowerInfo_c* sig_p);
+  #endif
   void FillCmdPowerInfo(pwrGetInfo_c* sig_p);
 
   //uint32_t adc1Data[8];

@@ -78,7 +78,7 @@ class LonTrafficProcess_c : public process_c
   void CheckDevFromConfig(void);
   void CheckDevFromConfigAck(LonIOdata_c* recSig_p);
 
-  #if USE_SENSORS_DATABASE == 1
+  #if LON_USE_SENSORS_DATABASE == 1
   void GetOutputsList(LonGetOutputsList_c* recSig_p);
   #endif
   #if USE_SENSORS == 1

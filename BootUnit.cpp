@@ -26,7 +26,7 @@ uint8_t __attribute((section(".APP_FLASH2"))) app2;
 AppInfo_st __attribute((section(".APP_INFO1"))) appInfo1;
 AppInfo_st __attribute((section(".APP_INFO2"))) appInfo2;
 
-const AppInfo_st __attribute((section(".APP_INFO_ACT"))) appInfoAct = {.versionName = "VER 0.95 "__DATE__" "__TIME__ };
+const AppInfo_st __attribute((section(".APP_INFO_ACT"))) appInfoAct = {.versionName = "VER 1.1 "__DATE__" "__TIME__ };
 
 const char* versionName = appInfoAct.versionName;
 

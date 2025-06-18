@@ -24,6 +24,7 @@ class SignalList_c
     HANDLE_LON_PHY_5,
     HANDLE_LON_PHY_6,
     HANDLE_LON_PHY_7,
+    HANDLE_UART,
     HANDLE_NO_OF
 
   };
@@ -89,6 +90,8 @@ class testSig_c : public Sig_c
   testSig_c(void) : Sig_c(SIGNO_TEST,HANDLE_CTRL) {}
 
 };
+
+#if LON_USE_ETHERNET == 1
 
 class tcpRxEventSig_c: public Sig_c
 {
@@ -187,6 +190,8 @@ class socketAddSig_c : public Sig_c
   socketAddSig_c(void) : Sig_c(SIGNO_SOCKET_ADD,HANDLE_TCP) {}
   class Socket_c* socket;
 };
+
+#endif
 
 class pwrTimTick_c : public Sig_c
 {

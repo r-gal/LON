@@ -8,7 +8,7 @@
 #define ARG_EQUAL_CHAR '='
 #define COMMAND_END_CHAR ';'
 
-#define COMMAND_USE_TELNET 1
+#define COMMAND_USE_TELNET 0
 #define COMMAND_USE_UART 1
 
 #endif

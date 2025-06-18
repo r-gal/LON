@@ -196,7 +196,7 @@ void LonTrafficProcess_c::main(void)
         }
         break;
         #endif
-        #if USE_SENSORS_DATABASE == 1
+        #if LON_USE_SENSORS_DATABASE == 1
       case SIGNO_LON_GET_OUTPUTS_LIST:
         GetOutputsList((LonGetOutputsList_c*) recSig_p);
         releaseSig = false;
@@ -699,7 +699,7 @@ void GetNoOfOutputTypeDevices(LonDevice_c* device,void* noOfDevices)
   }
 }
 
-#if USE_SENSORS_DATABASE == 1
+#if LON_USE_SENSORS_DATABASE == 1
 void GetOutputsValues(LonDevice_c* device,void* vsig_p)
 {
   devType_et devType = device->GetDevType();
