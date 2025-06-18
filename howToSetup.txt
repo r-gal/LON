@@ -1,0 +1,287 @@
+/* Dołączanie plików CMSIS i HAL*/
+Dodajemy ścieżki do katalogów z bibliotekami w ustawieniach projektu - User Include Directories:
+\Drivers\CMSIS\Include.
+\Drivers\CMSIS\Device\ST\STM32F4xx\Include.
+\Drivers\STM32F4xx_HAL_Driver\inc.
+
+Dodajemy definicje w ustawieniach projektu - Preprocessor Definitions:
+STM32F446xx
+
+Dołączamy pliki do kodu:
+system_stm32f4xx.c
+hal.c
+hal_cortex.c
+hal_gpio.c
+hal_tim.c
+hal_tim_ex.c
+hal_iwdg.c
+hal_rcc.c
+hal_flash.c
+hal_dma.c
+hal_uart.c
+
+Tworzymy plik stm32f4xx_hal_conf.h na podstawie stm32f4xx_hal_conf_template.h i przestawiamy w nim USE_HAL_TIM_REGISTER_CALLBACKS na 1
+
+/* Dołączanie plików FreeRTOS */
+
+W kolejnym kroku zajmiemy się dołączeniem plików dla FreeRTOS. w tym celu z oficjalnej strony ściągamy najnowszą wersję i rozpakowujemy. Interesujące nas pliki znajdziemy w katalogu FreeRTOS-Kernel.
+
+dodajemy ścieżki do katalogów z bibliotekami w ustawieniach projektu - User Include Directories:
+FreeRTOS-Kernel\include.
+należy też dodać odpowiednią wersję bibliotek dla naszej platformy i kompilatora, w moim przypadku jest to
+FreeRTOS-Kernel\portable\GCC\ARM_CM4F.
+
+Dołączamy pliki do kodu:
+croutine.c
+event_groups.c
+list.c
+queue.c
+stream_buffer.c
+tasks.c
+timers.c
+oraz z odpowiedniego katalogu portable:
+port.c
+
+Kopiujemy plik FreeRTOSConfig.h z repo LON/LonMain
+wartość configTOTAL_HEAP_SIZE jest ustawiona tak żeby wykorzystać dostępną pamięć w STM32F446, w przypadku użycia innego układu trzeba to zmienić.
+
+/* Dołączenie plików aplikacji */
+
+Jak już mamy wszystkie biblioteki to zajmiemy się dołączaniem właściwego kodu. Na początek jeżeli był wygenerowany to usuwamy plik main.c.
+
+
+Dodajemy ścieżki do katalogów z bibliotekami w ustawieniach projektu - User Include Directories:
+
+\MyLibs.
+\MyLibsLON.
+
+Dołączamy pliki z repo LON/LonMain
+CommandSystem.cpp/hpp
+CtrlProcess.cpp/hpp
+main.cpp/hpp
+SystemInit.cpp/hpp
+CommandConfig.hpp
+CommonDef.hpp
+LonConfig.hpp
+SignalList.hpp
+
+dołączamy pliki z repo CommonLibs/MyLibs
+
+commandHandler.cpp/hpp
+commonSignal.cpp/hpp
+HeapManager.cpp/hpp
+UartTerminal.cpp/hpp
+UartTerminalPhy.cpp/hpp
+
+dołączamy pliki z repo LON/MyLibsLON
+
+LonChannel.cpp/hpp
+LonChannelBasic.cpp/hpp
+LonCommands.cpp/hpp
+lonDatabase.cpp/hpp
+LonDevice.cpp/hpp
+LonInterfacePhy.cpp/hpp
+LonInterfaceProcess.cpp/hpp
+LonSensors.cpp/hpp
+LonTrafficProcess.cpp/hpp
+
+/* konfiguracja */
+
+W pliku LonConfig.hpp ustawiamy:
+- Ile magistral chcemy używać: NO_OF_BASIC_CHANNELS wartość od 1 do 8
+- Która przestrzeń pamięci Flash będzie przeznaczona na przechowywanie konfiguracji, potrzebujemy przynajmniej 3 sektory
+
+W pliku CommonDef.hpp ustawiamy:
+- Poprawne wartości GPIO dla magistral - DATA_x_Pin,DATA_x_Port, CLK_x_Pin,CLK_x_Port
+
+W pliku SystemInit.cpp:
+- w funkcji SystemClock_Config należy ustawić oczekiwaną konfigurację zegara uC, w przykładzie dla STM32F446 zegar używa HSI i PLL uzyskując 30MHz oraz zewnętrznego rezonatora LSE dla RTC.
+
+Ustawienia połączenia uart mozna zmieniać w pliku UartTerminalPhy.cpp - domyślnie jest to bitrate 38400, 8 bit, no parity, 1 bit stop.
+
+W tej postaci projekt powinien się skompilować i uruchomić. Jest najprostsza możliwa wersja i po skompilowaniu zajmuje ok 66kB pamięci Flash. Można na tym etapie uruchomić jeszcze kilka przydatnych funkcjonalności:
+
+/*** Zegar RTC: ***/
+
+ustawiamy flagę CONF_USE_TIME 1 w GeneralConfig.hpp
+
+dołączamy pliki z repo CommonLibs/MyLibs:
+TimeClass.cpp
+TimeClass.hpp
+
+Dołączamy pliki do kodu:
+hal_rtc.c
+hal_rtc_ex.c
+hal_exti.c
+hal_pwr.c
+hal_rcc_ex.c
+
+/*** wyłączniki czasowe ***/
+
+wymaga RTC
+RNG jest rekomendowany przy używaniu wyłączników czasowych RGB - niestety STM32F446 go nie posiada więc jest zrobiony bardzo prymitywny trick w postaci użycia wartości countera SYSTICK jako wartości pseudolosowej. Do tego zastosowania powinno wystarczyć.
+
+ustawiamy flagę USE_TIMERS 1 w LonConfig.hpp
+
+dołączamy pliki z repo LON/MyLibsLON:
+LonTimers.cpp
+LonTimers.hpp
+
+/*** Sensory ***/
+
+wymaga RTC
+
+ustawiamy flagę USE_SENSORS 1 w LonConfig.hpp
+
+dołączamy pliki z repo LON/MyLibsLON:
+LonSensors.cpp
+LonSensors.hpp 
+
+/*** RunTime ***/ 
+
+ustawiamy flagę CONF_USE_RUNTIME1 w GeneralConfig.hpp
+
+dołączamy pliki z repo CommonLibs/MyLibs:
+RunTime.cpp
+RunTime.hpp
+
+/*** RNG ***/ 
+
+ustawiamy flagę LON_USE_RNG 1 w GeneralConfig.hpp
+
+dołączamy pliki z repo CommonLibs/MyLibs:
+RngClass.cpp
+RngClass.hpp
+
+dołaczamy hal_rng.c z biblioteki HAL
+
+RngClass
+
+/*** SD CARD ***/
+
+ustawiamy flagę LON_USE_SDCARD 1 w GeneralConfig.hpp
+
+Dołączamy pliki z repo CommonLibs/MyLibs:
+sdCard_stm32h7xx.cpp/hpp
+albo 
+sdCard.cpp/hpp dla STM32F4xx
+
+Dołączamy pliki z repo CommonLibs/MyFat:
+CwdUnit.cpp/hpp
+DirUnit.cpp/hpp
+FatUnit.cpp/hpp
+FileSystem.cpp/hpp
+FileUnit.cpp/hpp
+lfnUnit.cpp/hpp
+FatCommonDef.hpp
+
+dołączamy hal_sd.c oraz ll_sdmmc.c z biblioteki HAL
+
+/*** POWER MANAGEMENT ***/
+
+Ten moduł jest zaprojektowany do współpracy z właściwym hardware, w przypadku zmian w sprzęcie może wymagać przeprogramowania.
+
+ustawiamy flagę LON_USE_PWR_MGMT 1 w GeneralConfig.hpp
+
+Dołączamy pliki z repo LON/LonMain
+PowerProcess.cpp/hpp
+AdcPhy.cpp/hpp
+
+Dołączamy pliki biblioteki HAL:
+hal_adc.c 
+hal_adc_ex.c  
+
+/*** SENSORS DATABASE ***/
+
+Wymaga modułów Sensors i CD_CARD
+
+ustawiamy flagę LON_USE_SENSORS_DATABASE 1 w LonConfig.hpp
+
+dołączamy pliki z repo LON/MyLibsLON:
+LonSensorsDatabaseProcess.cpp
+LonSensorsDatabaseProcess.hpp 
+
+/*** ETHERNET + TCP STACK ***/
+
+ustawiamy flagę LON_USE_ETHERNET 1 w GeneralConfig.hpp
+
+Stały adres ip można zmieniać w Ethernet_CONFIG.hpp
+
+Dołączamy pliki z repo CommonLibs/MyLibsEthernet:
+Ethernet.cpp/hpp
+Ethernet_RX.cpp/hpp
+Ethernet_TX.cpp/hpp
+EthernetPhy.cpp/hpp
+EthernetBuffers.cpp/hpp
+
+Dołączamy pliki z repo CommonLibs/MyLibsTcp:
+EthernnetCommon.cpp/hpp
+EthernetIp.cpp/hpp
+EthernetIpConfig.cpp/hpp
+EthernetMac.cpp/hpp
+EthernetSocket.cpp/hpp
+EthernetTcp.cpp/hpp
+EthernetUdp.cpp/hpp
+EthernetArp.cpp/hpp
+EthernetIcmp.cpp/hpp
+TcpProcess.cpp/hpp
+TcpWindow.cpp/hpp
+TcpDataDef.hpp
+
+Dołączamy plik z repo LON/LonMain
+Ethernet_CONFIG.hpp
+
+Dołączamy pliki biblioteki HAL:
+hal_eth.c
+
+
+/*** CONFIGURABLE IP ADDRESS ***/
+Potrzebny jest uruchomiony RTC  - konfiguracja ip jest przechowywana w pamięci backup RTC.
+
+ustawiamy flagę USE_CONFIGURABLE_IP 1 w Ethernet_CONFIG .hpp
+
+/*** DHCP ***/
+
+Potrzebny jest aktywny CONFIGURABLE IP ADDRESS
+
+ustawiamy flagę USE_DHCP 1 w Ethernet_CONFIG.hpp
+
+Dołączamy pliki z repo CommonLibs/MyLibsTcp:
+EthernnetDhcp.cpp/hpp
+
+/*** NTP***/
+
+Potrzebny jest uruchomiony RTC
+
+ustawiamy flagę USE_NTP 1 w Ethernet_CONFIG.hpp
+
+Dołączamy pliki z repo CommonLibs/MyLibsTcp:
+EthernnetNtp.cpp/hpp
+
+/*** SERWER TELNET ***/
+
+ustawiamy flagę USE_TELNET 1 w Ethernet_CONFIG.hpp
+ustawiamy flagę COMMAND_USE_TELNET 1 w ComandConfig.hpp
+
+Dołączamy pliki z repo CommonLibs/MyLibsEthernet:
+TELNET_ServerProcess.cpp/hpp
+
+/*** SERWER FTP***/
+
+wymagany jest uruchomiony SD_CARD 
+
+ustawiamy flagę USE_FTP 1 w Ethernet_CONFIG.hpp
+
+Dołączamy pliki z repo CommonLibs/MyLibsEthernet:
+FTP_ServerProcess.cpp/hpp
+
+/*** SERWER HTTP***/
+
+ustawiamy flagę USE_HTTP 1 w Ethernet_CONFIG.hpp
+ustawiamy flagę USE_HTTP_INTERFACE 1 w LonConfig.hpp
+
+Dołączamy pliki z repo CommonLibs/MyLibsEthernet:
+HTTP_ServerProcess.cpp/hpp
+
+Dołączamy pliki z repo  LON/MyLibsLON:
+LonHttpInterface.cpp/hpp
